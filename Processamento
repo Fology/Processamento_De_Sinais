@@ -1,0 +1,39 @@
+% Disciplina: Instrumentação/UFSJ
+%========================================================
+clear all        
+close all            
+clc               
+%========================================================
+x = load('Arquivos.txt');     	%Carrega e lê o arquivo
+fs = 8192;                                                                   %Tamanho da amostragem
+T = 1;                                                                 	%Tempo de teste
+%========================================================
+n = length(x);                               			%Tamanho da lista
+t = linspace(0,T,n);                        			%Vetor de tempo
+figure                                     				 %Plot
+plot(t, x);                                   
+xlabel('Tempo[s]')
+ylabel('Amplitude')
+%========================================================
+w = hanning(n);                            		%Coeficiente de Hanning (Análise Espectral)
+xw = 2*w.*x;
+%========================================================
+g = 9.81;                     					% Gravidade
+acc1 = g*abs(fft(xw)/(n/2));  				% FFT do sinal 1 (dominio da frequência)
+freq = linspace(0, fs, n); 
+figure                        %Plot
+plot(freq, acc1);
+xlabel('Frequencia[Hz]');
+ylabel('Amplitude(m/s^2)');
+xlim([0 2000]); 
+%========================================================
+omega = (2*pi*freq);
+rms = sqrt(2)/2;
+vel1 = abs(acc1./(1i*omega')); 			%j = raiz-1
+vel = 1000*rms*vel1;
+figure                         					%Plot
+plot(freq, vel);
+xlabel('Frequencia[Hz]');
+ylabel('Velocidade(mm/s)');
+xlim([0 2000]);
+%========================================================
